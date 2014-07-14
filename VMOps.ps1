@@ -26,6 +26,7 @@ function StartCluster($serviceName, $vmNames)
     } 
 }
 
+#removes all the VMs in the Cloud Service inluding the last VM
 function StopCluster($serviceName, $vmNames)
 {
     foreach($vmName in $vmNames)
@@ -36,18 +37,8 @@ function StopCluster($serviceName, $vmNames)
 
 function GetVMNames($svcName)
 {
-    $vmXml = (Get-AzureDeployment -ServiceName $svcName).Configuration
-    [System.Xml.XmlDocument]$xd = new-object System.Xml.XmlDocument
-    $xd.LoadXml($vmXml)
-
-    $vmList = $xd.ChildNodes
-    $vmNames = @()
-    foreach($vm in $vmList.ChildNodes )
-    {
-        $vmNames += $vm.name
-    }
-
-    return $vmNames
+    $vmList = (Get-AzureVM -ServiceName $svcName).Name
+    return $vmList;
 }
 
 if($args.Length -ne 3)
